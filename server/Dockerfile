@@ -30,7 +30,6 @@ RUN apt-get clean && rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*
 # Enable apache modules.
 RUN a2enmod rewrite
 
-
 # Create user, vhosts, permissions.
 # Change user apache runs.
 RUN sed -i -e"s/^export\s*APACHE_RUN_USER=www-data/export APACHE_RUN_USER=serveruser/" /etc/apache2/envvars && \
@@ -38,9 +37,6 @@ RUN sed -i -e"s/^export\s*APACHE_RUN_USER=www-data/export APACHE_RUN_USER=server
 
 # php.ini for PHP 7
 COPY config /etc/php/7.0/apache2
-
-# php.ini for PHP 7.2
-#COPY config /etc/php/7.2/apache2
 
 # Create user.
 RUN groupadd -r serveruser -g $GID && useradd -ms /bin/bash serveruser -u $UID -g $GID
@@ -56,14 +52,13 @@ RUN wget https://phar.phpunit.de/phpunit.phar && \
   chmod +x phpunit.phar && \
   mv phpunit.phar /usr/local/bin/phpunit
 
-
 # Add vhosts and enable sites.
 COPY vhosts /etc/apache2/sites-available
 RUN cd /etc/apache2/sites-available && a2ensite * && a2dissite default-ssl 000-default
 
 # Setup ssh.
 RUN mkdir /var/run/sshd && \
-  echo 'root:tse6079280783!' | chpasswd && \
+  echo 'root:root' | chpasswd && \
   sed -i 's/prohibit-password/yes/' /etc/ssh/sshd_config
 
 # Setup supervisor to run child processes.
