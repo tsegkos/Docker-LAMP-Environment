@@ -58,7 +58,7 @@ RUN cd /etc/apache2/sites-available && a2ensite * && a2dissite default-ssl 000-d
 
 # Setup ssh.
 RUN mkdir /var/run/sshd && \
-  echo 'root:root' | chpasswd && \
+  echo 'root:${SERVER_ROOT_PASSWORD}' | chpasswd && \
   sed -i 's/prohibit-password/yes/' /etc/ssh/sshd_config
 
 # Setup supervisor to run child processes.
